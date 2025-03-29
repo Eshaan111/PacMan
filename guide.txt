@@ -1,0 +1,15 @@
+STEPS TO LOAD IMAGE :
+
+
+1. Create normal rectangle body,
+        SDL_Rect rect = {40,40, 100, 100}
+2. Create texture_variable to go go on that body 
+        SDL_Texture *texture
+3. Create Surface to load the texture,  (surface = Source image used to make TEXTURE)
+    SDL_Surface *Surface = NULL;
+    Surface = IMG_Load("image.png")
+4. put Surface on texture by renderer : 
+        texture = SDL_CreateTextureFromSurface(renderer,Surface);
+        SDL_FreeSurface(Surface);
+5. Render texture on the rectangle :
+        SDL_RenderCopy(renderer,game->pacman_texture,NULL,&rect);
