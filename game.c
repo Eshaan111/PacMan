@@ -16,13 +16,21 @@ typedef struct {
     float vx, vy;
 } Entity;
 
+SDL_Texture* curr_pacman_texture;
+
 typedef struct {
     Entity pacman;
-    SDL_Texture *pacman_texture;
+    SDL_Texture *pacman_up_texture;
+    SDL_Texture *pacman_front_texture;
+    SDL_Texture *pacman_down_texture;
+    SDL_Texture *pacman_back_texture;
     SDL_Texture *moss_texture;
     SDL_Texture *stone_texture;
     SDL_Texture *lava_texture;
     SDL_Texture *lava_flow_texture;
+
+   
+    
 } GameState;
 
 int level1[MAP_HEIGHT][MAP_WIDTH] = {
@@ -201,18 +209,22 @@ int check_events(SDL_Window *window, GameState *game, float speed, float deltaTi
     float newX = game->pacman.x;
     float newY = game->pacman.y;
 
-    if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A])
+    if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A]){
         newX -= acceleration;
-    else if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D])
+        curr_pacman_texture = game->pacman_back_texture;
+    }else if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D]){
         newX += acceleration;
-    else
+        curr_pacman_texture = game->pacman_front_texture;
+    }else
         game->pacman.vx *= DECAY_RATE;
 
-    if (keys[SDL_SCANCODE_UP] || keys[SDL_SCANCODE_W])
+    if (keys[SDL_SCANCODE_UP] || keys[SDL_SCANCODE_W]){
         newY -= acceleration;
-    else if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S])
+        curr_pacman_texture = game->pacman_up_texture;
+    }else if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S]){
         newY += acceleration;
-    else
+        curr_pacman_texture = game->pacman_down_texture;
+    }else
         game->pacman.vy *= DECAY_RATE;
 
     if (!checkCollision(newX, game->pacman.y))
@@ -225,7 +237,7 @@ int check_events(SDL_Window *window, GameState *game, float speed, float deltaTi
 }
 
 void renderGame(SDL_Renderer *renderer, GameState *game) {
-    SDL_SetRenderDrawColor(renderer, 26,26,26, 255);
+    SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
     SDL_RenderClear(renderer);
     
     if(curr_level_num!=2){
@@ -265,7 +277,7 @@ void renderGame(SDL_Renderer *renderer, GameState *game) {
     
 
     SDL_Rect pacmanRect = { (int)game->pacman.x, (int)game->pacman.y, PACMAN_SIZE, PACMAN_SIZE };
-    SDL_RenderCopy(renderer, game->pacman_texture, NULL, &pacmanRect);
+    SDL_RenderCopy(renderer, curr_pacman_texture, NULL, &pacmanRect);
 
 
     SDL_RenderPresent(renderer);
@@ -288,9 +300,33 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    SDL_Surface *pacmanSurface = IMG_Load("images/pacman-png-25200.png");
-    if (!pacmanSurface) {
-        printf("Could not load Pac-Man image: %s\n", IMG_GetError());
+    SDL_Surface *pacmanUpSurface = IMG_Load("images/pacman-up.png");
+    if (!pacmanUpSurface) {
+        printf("Could not load Pac-Man-Up image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    SDL_Surface *pacmanDownSurface = IMG_Load("images/pacman-down.png");
+    if (!pacmanDownSurface) {
+        printf("Could not load Pac-Man-Down image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    SDL_Surface *pacmanBackSurface = IMG_Load("images/pacman-back.png");
+    if (!pacmanBackSurface) {
+        printf("Could not load Pac-Man-Back image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    SDL_Surface *pacmanFrontSurface = IMG_Load("images/pacman-front.png");
+    if (!pacmanFrontSurface) {
+        printf("Could not load Pac-Man-Front image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -324,7 +360,7 @@ int main(int argc, char *argv[]) {
     }
     SDL_Surface *lava_flowSurface = IMG_Load("images/lava_flow.jpg");
     if (!lavaSurface) {
-        printf("Could not load lava image: %s\n", IMG_GetError());
+        printf("Could not load lava-flow image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -336,17 +372,22 @@ int main(int argc, char *argv[]) {
     SpawnPacman(&game.pacman.x, &game.pacman.y,curr_level_num);
     game.pacman.vx = 0;
     game.pacman.vy = 0;
-    game.pacman_texture = SDL_CreateTextureFromSurface(renderer, pacmanSurface);
+    
+    game.pacman_up_texture = SDL_CreateTextureFromSurface(renderer, pacmanUpSurface);
+    game.pacman_back_texture = SDL_CreateTextureFromSurface(renderer, pacmanBackSurface);
+    game.pacman_down_texture = SDL_CreateTextureFromSurface(renderer, pacmanDownSurface);
+    game.pacman_front_texture = SDL_CreateTextureFromSurface(renderer, pacmanFrontSurface);
+
     game.moss_texture = SDL_CreateTextureFromSurface(renderer,mossSurface);
     game.stone_texture = SDL_CreateTextureFromSurface(renderer,stoneSurface);
     game.lava_texture = SDL_CreateTextureFromSurface(renderer,lavaSurface);
     game.lava_flow_texture = SDL_CreateTextureFromSurface(renderer,lava_flowSurface);
-    SDL_FreeSurface(pacmanSurface);
+    SDL_FreeSurface(pacmanUpSurface);
     SDL_FreeSurface(mossSurface);
     SDL_FreeSurface(stoneSurface);
     SDL_FreeSurface(lavaSurface);
     SDL_FreeSurface(lava_flowSurface);
-
+    curr_pacman_texture = game.pacman_front_texture;
     Uint32 lastTime = SDL_GetTicks();
     int quit = 0;
 
@@ -376,7 +417,14 @@ int main(int argc, char *argv[]) {
         quit = check_events(window, &game, SPEED, deltaTime);
         renderGame(renderer, &game);
     }
-    SDL_DestroyTexture(game.pacman_texture);
+    SDL_DestroyTexture(game.pacman_up_texture);
+    SDL_DestroyTexture(game.pacman_down_texture);
+    SDL_DestroyTexture(game.pacman_front_texture);
+    SDL_DestroyTexture(game.pacman_back_texture);
+    SDL_DestroyTexture(game.moss_texture);
+    SDL_DestroyTexture(game.stone_texture);
+    SDL_DestroyTexture(game.lava_texture);
+    SDL_DestroyTexture(game.lava_flow_texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
