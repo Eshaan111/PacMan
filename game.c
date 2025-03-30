@@ -453,7 +453,7 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
         }
         SDL_Rect arrowDownRect = {game->arrow_down.x, game->arrow_down.y, 54, 54};
         if (game->arrow_down.x - TILE_SIZE > 1){
-            SDL_RenderCopy(renderer, game->arrow_down_texture, NULL, &arrowDownRect);x
+            SDL_RenderCopy(renderer, game->arrow_down_texture, NULL, &arrowDownRect);
         }
     }
 
