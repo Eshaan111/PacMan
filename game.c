@@ -371,6 +371,12 @@ int check_events(SDL_Window *window, GameState *game, float speed, float deltaTi
         SDL_Quit();
         exit(0);
     }
+    if (fabs(game->pacman.x - game->arrow_down.x) < PACMAN_SIZE && fabs(game->pacman.y - game->arrow_down.y) < PACMAN_SIZE)
+    {
+        printf("Game Over! The arrow caught Pac-Man.\n");
+        SDL_Quit();
+        exit(0);
+    }
     check_level_end(game->pacman.x, game->pacman.y, game);
     return quit;
 }

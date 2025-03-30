@@ -1,2 +1,3 @@
-gcc game.c -o game.exe -I C:\SDL2\include -L C:\SDL2\lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+gcc game.c -o game.exe -I C:\SDL2\include -L C:\SDL2\lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lm
+
 
