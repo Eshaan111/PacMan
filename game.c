@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
-
+#include <stdlib.h> 
 #define SCREEN_WIDTH 1080
 #define SCREEN_HEIGHT 720
 #define TILE_SIZE (SCREEN_WIDTH / 20)  // 54 pixels per tile
@@ -19,7 +19,10 @@ typedef struct {
 typedef struct {
     Entity pacman;
     SDL_Texture *pacman_texture;
-    SDL_Texture *wall_texture;
+    SDL_Texture *moss_texture;
+    SDL_Texture *stone_texture;
+    SDL_Texture *lava_texture;
+    SDL_Texture *lava_flow_texture;
 } GameState;
 
 int level1[MAP_HEIGHT][MAP_WIDTH] = {
@@ -38,17 +41,33 @@ int level1[MAP_HEIGHT][MAP_WIDTH] = {
 
 int level2[MAP_HEIGHT][MAP_WIDTH] = {
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-    {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
-    {1,0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,0,1},
-    {1,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,1},
-    {1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0,1},
-    {1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
-    {0,0,1,0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,0,1},
-    {1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,1,0,1},
-    {1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
+    {1,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1},
+    {1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,1,1,1,0,1},
+    {1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1},
+    {1,0,1,1,1,0,1,1,1,0,1,1,0,1,1,1,0,1,0,1},
+    {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1},
+    {0,0,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1},
+    {1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,1},
+    {1,0,1,1,1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1},
+    {1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0},
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
+
+
+int level3[MAP_HEIGHT][MAP_WIDTH] = {
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+    {1,0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,0,1},
+    {1,0,1,0,0,0,1,2,2,2,2,1,0,0,0,0,0,1,0,1},
+    {1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,0,1},
+    {1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
+    {1,0,1,0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,0,1},
+    {1,0,0,0,1,2,2,2,2,2,2,1,0,0,0,1,0,1,0,1},
+    {1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+};
+
 
 int curr_level[13][20];
 int curr_level_num = 1;
@@ -61,49 +80,27 @@ void array_copy(int curr_level[13][20], int level_array[13][20]){
     }
 }
 
-// void set_level(GameState *game){
-//     float x_pos = game->pacman.x;
-//     float y_pos = game->pacman.x;
-
-    
-//     switch (expression)
-//     {
-//     case constant expression:
-//         /* code */
-//         break;
-    
-//     default:
-//         break;
-//     }
-
-// }
-
 // Find an empty tile and return its position
+
 void SpawnPacman(float *x, float *y,int curr_level) {
     switch (curr_level)
     {
     case 1:
-        *x = TILE_SIZE*1 + (TILE_SIZE-PACMAN_SIZE)/2;
-        *y = TILE_SIZE*1 + (TILE_SIZE-PACMAN_SIZE)/2;
+        *x = TILE_SIZE*18 + (TILE_SIZE-PACMAN_SIZE)/2;
+        *y = TILE_SIZE*6 + (TILE_SIZE-PACMAN_SIZE)/2;
         break;
     case 2:
         *x = TILE_SIZE*0 + (TILE_SIZE-PACMAN_SIZE)/2;
         *y = TILE_SIZE*6 + (TILE_SIZE-PACMAN_SIZE)/2;
         break;
+    case 3:
+        *x = TILE_SIZE*0 + (TILE_SIZE-PACMAN_SIZE)/2;
+        *y = TILE_SIZE*9 + (TILE_SIZE-PACMAN_SIZE)/2;
+        break;
     default:
         break;
     }
-    
-    
-    // for (int row = 0; row < MAP_HEIGHT; row++) {
-    //     for (int col = 0; col < MAP_WIDTH; col++) {
-    //         if (curr_level[row][col] == 0) {  // Found empty space
-    //             *x = col * TILE_SIZE + (TILE_SIZE - PACMAN_SIZE) / 2;  // Center in tile
-    //             *y = row * TILE_SIZE + (TILE_SIZE - PACMAN_SIZE) / 2;
-    //             return;
-    //         }
-    //     }
-    // }
+
 }
 
 // Collision detection with all four corners of Pac-Man
@@ -130,6 +127,39 @@ int checkCollision(float x, float y) {
 
 }
 
+SDL_Texture* curr_primary_text(int curr_level, GameState *game){
+    switch(curr_level){
+        case 1:
+        return game->moss_texture;
+        break;
+
+        case 2:
+        return game->stone_texture;
+        break;
+
+        case 3:
+        return game->lava_texture;
+        break;
+    }
+}
+
+SDL_Texture* curr_second_text(int curr_level, GameState *game){
+    switch(curr_level){
+        case 1:
+        return game->moss_texture;
+        break;
+
+        case 2:
+        return game->stone_texture;
+        break;
+
+        case 3:
+        return game->lava_flow_texture;
+        break;
+    }
+}
+
+
 int check_level_end(float x,float y){
     int tileX1 = (int)(x / TILE_SIZE); //left wall
     int tileY1 = (int)(y / TILE_SIZE); //top wall
@@ -139,6 +169,12 @@ int check_level_end(float x,float y){
     case 1:
     if(tileY1 ==6 && tileX1 == 19){
         curr_level_num = 2;
+        return 1;
+        //SDL_Quit();
+    }break;
+    case 2:
+    if(tileY1 ==9 && tileX1 == 19){
+        curr_level_num = 3;
         return 1;
         //SDL_Quit();
     }break;
@@ -191,16 +227,42 @@ int check_events(SDL_Window *window, GameState *game, float speed, float deltaTi
 void renderGame(SDL_Renderer *renderer, GameState *game) {
     SDL_SetRenderDrawColor(renderer, 26,26,26, 255);
     SDL_RenderClear(renderer);
-
-    SDL_SetRenderDrawColor(renderer,204,204,204, 255);
-    for (int y = 0; y < MAP_HEIGHT; y++) {
-        for (int x = 0; x < MAP_WIDTH; x++) {
-            if (curr_level[y][x] == 1) {
-                SDL_Rect wallRect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
-                SDL_RenderCopy(renderer, game->wall_texture, NULL, &wallRect);
+    
+    if(curr_level_num!=2){
+        SDL_SetRenderDrawColor(renderer,204,204,204, 255);
+        for (int y = 0; y < MAP_HEIGHT; y++) {
+            for (int x = 0; x < MAP_WIDTH; x++) {
+                if (curr_level[y][x] == 1) {
+                    SDL_Rect wallRect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+                    SDL_RenderCopy(renderer, curr_primary_text(curr_level_num,game), NULL, &wallRect);
+                }
+                else if(curr_level[y][x]==2){
+                    SDL_Rect wallRect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+                    SDL_RenderCopy(renderer, curr_second_text(curr_level_num,game), NULL, &wallRect);
+                }
             }
         }
     }
+    else{
+
+        float pacman_x = game->pacman.x;
+        float pacman_y = game->pacman.y;
+        int pacman_xTile = pacman_x/TILE_SIZE;
+        int pacman_yTile = pacman_y/TILE_SIZE;
+
+        SDL_SetRenderDrawColor(renderer,204,204,204, 255);
+        for (int y = 0; y < MAP_HEIGHT; y++) {
+            for (int x = 0; x < MAP_WIDTH; x++) {
+                if (curr_level[y][x] == 1) { //check for wall                    
+                    // check if xth,yth tile is in a 4block radius of pacman tile;
+                    if (abs(x - pacman_xTile) < 4 && abs(y - pacman_yTile) < 4){
+                    SDL_Rect wallRect = {x*TILE_SIZE,y*TILE_SIZE, TILE_SIZE, TILE_SIZE };
+                    SDL_RenderCopy(renderer, curr_primary_text(curr_level_num,game), NULL, &wallRect);
+                }}
+            }
+        }        
+    }
+    
 
     SDL_Rect pacmanRect = { (int)game->pacman.x, (int)game->pacman.y, PACMAN_SIZE, PACMAN_SIZE };
     SDL_RenderCopy(renderer, game->pacman_texture, NULL, &pacmanRect);
@@ -226,7 +288,7 @@ int main() {
         return 1;
     }
 
-    SDL_Surface *pacmanSurface = IMG_Load("pacman-png-25200.png");
+    SDL_Surface *pacmanSurface = IMG_Load("images/pacman-png-25200.png");
     if (!pacmanSurface) {
         printf("Could not load Pac-Man image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
@@ -235,9 +297,34 @@ int main() {
         return 1;
     }
     
-    SDL_Surface *wallSurface = IMG_Load("moss.png");
-    if (!wallSurface) {
-        printf("Could not load Wall image: %s\n", IMG_GetError());
+    SDL_Surface *mossSurface = IMG_Load("images/moss.png");
+    if (!mossSurface) {
+        printf("Could not load moss image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_Surface *stoneSurface = IMG_Load("images/stone.jpg");
+    if (!stoneSurface) {
+        printf("Could not load stoneimage: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    SDL_Surface *lavaSurface = IMG_Load("images/lava.jpg");
+    if (!lavaSurface) {
+        printf("Could not load lava image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    SDL_Surface *lava_flowSurface = IMG_Load("images/lava_flow.jpg");
+    if (!lavaSurface) {
+        printf("Could not load lava image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -245,15 +332,20 @@ int main() {
     }
 
 
-
     GameState game;
     SpawnPacman(&game.pacman.x, &game.pacman.y,curr_level_num);
     game.pacman.vx = 0;
     game.pacman.vy = 0;
     game.pacman_texture = SDL_CreateTextureFromSurface(renderer, pacmanSurface);
-    game.wall_texture = SDL_CreateTextureFromSurface(renderer,wallSurface);
+    game.moss_texture = SDL_CreateTextureFromSurface(renderer,mossSurface);
+    game.stone_texture = SDL_CreateTextureFromSurface(renderer,stoneSurface);
+    game.lava_texture = SDL_CreateTextureFromSurface(renderer,lavaSurface);
+    game.lava_flow_texture = SDL_CreateTextureFromSurface(renderer,lava_flowSurface);
     SDL_FreeSurface(pacmanSurface);
-    SDL_FreeSurface(wallSurface);
+    SDL_FreeSurface(mossSurface);
+    SDL_FreeSurface(stoneSurface);
+    SDL_FreeSurface(lavaSurface);
+    SDL_FreeSurface(lava_flowSurface);
 
     Uint32 lastTime = SDL_GetTicks();
     int quit = 0;
@@ -269,6 +361,8 @@ int main() {
                 array_copy(curr_level, level1);
             } else if (curr_level_num == 2) {
                 array_copy(curr_level, level2);
+            } else if (curr_level_num == 3) {
+                array_copy(curr_level, level3);
             }
             
             // Respawn Pac-Man when switching levels
