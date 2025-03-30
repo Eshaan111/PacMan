@@ -97,8 +97,8 @@ void SpawnPacman(float *x, float *y,int curr_level) {
     switch (curr_level)
     {
     case 1:
-        *x = TILE_SIZE*18 + (TILE_SIZE-PACMAN_SIZE)/2;
-        *y = TILE_SIZE*6 + (TILE_SIZE-PACMAN_SIZE)/2;
+        *x = TILE_SIZE*1 + (TILE_SIZE-PACMAN_SIZE)/2;
+        *y = TILE_SIZE*1 + (TILE_SIZE-PACMAN_SIZE)/2;
         break;
     case 2:
         *x = TILE_SIZE*0 + (TILE_SIZE-PACMAN_SIZE)/2;
