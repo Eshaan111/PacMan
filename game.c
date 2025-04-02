@@ -102,7 +102,7 @@ int level4[MAP_HEIGHT][MAP_WIDTH] = {
 };
 
 int curr_level[13][20];
-int curr_level_num = 1;
+int curr_level_num = 4;
 int prev_level_num = 0;
 int shield = 0;
 SDL_Texture *curr_pacman_texture;
@@ -391,6 +391,16 @@ int check_level_end(float x, float y, GameState *game)
             level4[3][8] =1;
             level4[3][10] =1;
 
+         }
+         if(tileY1 ==5 && tileX1 ==9){
+            level4[1][10] =1;
+            level4[2][9] = 1;
+            level4[3][9] = 2;
+            level4[4][9] = 1;
+
+            level4[1][13] =0;
+            level4[3][8] =2;
+            level4[3][10] =2;
          }
          array_copy(curr_level,level4);
     default:
