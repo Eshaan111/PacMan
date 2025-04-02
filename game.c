@@ -102,7 +102,7 @@ int level4[MAP_HEIGHT][MAP_WIDTH] = {
 };
 
 int curr_level[13][20];
-int curr_level_num = 4;
+int curr_level_num = 1;
 int prev_level_num = 0;
 int shield = 0;
 SDL_Texture *curr_pacman_texture;
