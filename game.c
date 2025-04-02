@@ -29,6 +29,10 @@ typedef struct
     SDL_Texture *pacman_front_texture;
     SDL_Texture *pacman_down_texture;
     SDL_Texture *pacman_back_texture;
+    SDL_Texture *pacman_up_shield_texture;
+    SDL_Texture *pacman_front_shield_texture;
+    SDL_Texture *pacman_down_shield_texture;
+    SDL_Texture *pacman_back_shield_texture;
     SDL_Texture *ghost_texture;
     SDL_Texture *arrow_up_texture;
     SDL_Texture *arrow_down_texture;
@@ -98,9 +102,14 @@ int level4[MAP_HEIGHT][MAP_WIDTH] = {
 };
 
 int curr_level[13][20];
-int curr_level_num = 4;
+int curr_level_num = 1;
 int prev_level_num = 0;
+int shield = 0;
 SDL_Texture *curr_pacman_texture;
+SDL_Texture *curr_shield_texture;
+Uint32 lastSpacePressTime = 0;
+Uint32 currentTime = 0;
+Uint32 spacePressStartTime = 0;
 
 void array_copy(int curr_level[13][20], int level_array[13][20])
 {
@@ -391,7 +400,8 @@ int check_level_end(float x, float y, GameState *game)
 }
 
 int check_events(SDL_Window *window, GameState *game, float speed, float deltaTime)
-{
+{   
+    
     int quit = 0;
     SDL_Event event;
 
@@ -408,15 +418,18 @@ int check_events(SDL_Window *window, GameState *game, float speed, float deltaTi
     float newX = game->pacman.x;
     float newY = game->pacman.y;
 
-    if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A])
+    //movement detection
+     if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A])
     {
         newX -= acceleration;
         curr_pacman_texture = game->pacman_back_texture;
+        curr_shield_texture = game->pacman_back_shield_texture;
     }
     else if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D])
     {
         newX += acceleration;
         curr_pacman_texture = game->pacman_front_texture;
+        curr_shield_texture = game->pacman_front_shield_texture;
     }
     else
         game->pacman.vx *= DECAY_RATE;
@@ -425,14 +438,42 @@ int check_events(SDL_Window *window, GameState *game, float speed, float deltaTi
     {
         newY -= acceleration;
         curr_pacman_texture = game->pacman_up_texture;
+        curr_shield_texture = game->pacman_up_shield_texture;
     }
     else if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S])
     {
         newY += acceleration;
         curr_pacman_texture = game->pacman_down_texture;
+        curr_shield_texture = game->pacman_down_shield_texture;
     }
     else
         game->pacman.vy *= DECAY_RATE;
+
+    //detect spacebar for arrow deflection
+    //  if (keys[SDL_SCANCODE_SPACE]) {
+    //     lastSpacePressTime = currentTime; // Update last press time
+    // }
+        
+    if (keys[SDL_SCANCODE_SPACE]) {
+        if (spacePressStartTime == 0) {
+            spacePressStartTime = currentTime;  // First press detected
+        }
+        lastSpacePressTime = currentTime;  // Reset shield duration timer
+
+        // If space has been held continuously for 1 second, disable shield
+        if (currentTime - spacePressStartTime >= 1000) {
+            shield = 0;
+        } else {
+            shield = 1;
+        }
+    } else {
+        spacePressStartTime = 0;  // Reset hold timer when space is released
+    }
+
+    // If space was **tapped**, keep the shield for 1 second after last press
+    if (currentTime - lastSpacePressTime >= 1000) {
+        shield = 0;  // Shield expires 1 sec after last tap
+    }
 
     if (!checkCollision(newX, game->pacman.y))
         game->pacman.x = newX;
@@ -440,24 +481,32 @@ int check_events(SDL_Window *window, GameState *game, float speed, float deltaTi
     {
         game->pacman.y = newY;
     }
+    
+    //GHOST PACMAN COLLISION 
     if (fabs(game->pacman.x - game->ghost.x) < PACMAN_SIZE && fabs(game->pacman.y - game->ghost.y) < PACMAN_SIZE)
     {
         printf("Game Over! The ghost caught Pac-Man.\n");
         SDL_Quit();
         exit(0);
     }
-    if (fabs(game->pacman.x - game->arrow_up.x) < PACMAN_SIZE && fabs(game->pacman.y - game->arrow_up.y) < PACMAN_SIZE)
-    {
+    
+    // PACMAN ARROWS COLLISION
+    if (shield == 0) {
+    if (fabs(game->pacman.x - game->arrow_up.x) < PACMAN_SIZE && fabs(game->pacman.y - game->arrow_up.y) < PACMAN_SIZE) {
         printf("Game Over! The arrow caught Pac-Man.\n");
         SDL_Quit();
         exit(0);
     }
-    if (fabs(game->pacman.x - game->arrow_down.x) < PACMAN_SIZE && fabs(game->pacman.y - game->arrow_down.y) < PACMAN_SIZE)
-    {
+
+    if (fabs(game->pacman.x - game->arrow_down.x) < PACMAN_SIZE && fabs(game->pacman.y - game->arrow_down.y) < PACMAN_SIZE) {
         printf("Game Over! The arrow caught Pac-Man.\n");
         SDL_Quit();
         exit(0);
     }
+} else {
+    printf("Parried!\n");
+}
+    
     check_level_end(game->pacman.x, game->pacman.y, game);
     return quit;
 }
@@ -576,8 +625,14 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
         }
     }
 
-    SDL_Rect pacmanRect = {(int)game->pacman.x, (int)game->pacman.y, PACMAN_SIZE, PACMAN_SIZE};
-    SDL_RenderCopy(renderer, curr_pacman_texture, NULL, &pacmanRect);
+    if(shield == 0){
+        SDL_Rect pacmanRect = {(int)game->pacman.x, (int)game->pacman.y, PACMAN_SIZE, PACMAN_SIZE};
+        SDL_RenderCopy(renderer, curr_pacman_texture, NULL, &pacmanRect);
+    }
+    else{
+        SDL_Rect pacmanRect = {(int)game->pacman.x, (int)game->pacman.y, PACMAN_SIZE, PACMAN_SIZE};
+        SDL_RenderCopy(renderer, curr_shield_texture, NULL, &pacmanRect);
+    }
 
     if(curr_level_num!=1 && curr_level_num!=2){    
     SDL_Rect ghostRect = {(int)game->ghost.x, (int)game->ghost.y, PACMAN_SIZE, PACMAN_SIZE};
@@ -637,6 +692,43 @@ int main(int argc, char *argv[])
     if (!pacmanFrontSurface)
     {
         printf("Could not load Pac-Man-Front image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_Surface *shieldFrontSurface = IMG_Load("images/pacman-front-shield.png");
+    if (!pacmanFrontSurface)
+    {
+        printf("Could not load Pac-Shield-Front image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    SDL_Surface *shieldUpSurface = IMG_Load("images/pacman-up-shield.png");
+    if (!pacmanFrontSurface)
+    {
+        printf("Could not load Pac-Shield-Up image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    SDL_Surface *shieldBackSurface = IMG_Load("images/pacman-back-shield.png");
+    if (!pacmanFrontSurface)
+    {
+        printf("Could not load Pac-Shield-Back image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    SDL_Surface *shieldDownSurface = IMG_Load("images/pacman-down-shield.png");
+    if (!pacmanFrontSurface)
+    {
+        printf("Could not load Pac-Shield-Down: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -741,6 +833,10 @@ int main(int argc, char *argv[])
     game.pacman_back_texture = SDL_CreateTextureFromSurface(renderer, pacmanBackSurface);
     game.pacman_down_texture = SDL_CreateTextureFromSurface(renderer, pacmanDownSurface);
     game.pacman_front_texture = SDL_CreateTextureFromSurface(renderer, pacmanFrontSurface);
+    game.pacman_up_shield_texture = SDL_CreateTextureFromSurface(renderer, shieldUpSurface);
+    game.pacman_back_shield_texture = SDL_CreateTextureFromSurface(renderer, shieldBackSurface);
+    game.pacman_down_shield_texture = SDL_CreateTextureFromSurface(renderer, shieldDownSurface);
+    game.pacman_front_shield_texture = SDL_CreateTextureFromSurface(renderer, shieldFrontSurface);
     game.ghost_texture = SDL_CreateTextureFromSurface(renderer, ghostSurface);
     game.arrow_up_texture = SDL_CreateTextureFromSurface(renderer, arrowUpSurface);
     game.arrow_down_texture = SDL_CreateTextureFromSurface(renderer, arrowDownSurface);
@@ -754,6 +850,10 @@ int main(int argc, char *argv[])
     SDL_FreeSurface(pacmanDownSurface);
     SDL_FreeSurface(pacmanFrontSurface);
     SDL_FreeSurface(pacmanBackSurface);
+    SDL_FreeSurface(shieldBackSurface);
+    SDL_FreeSurface(shieldUpSurface);
+    SDL_FreeSurface(shieldFrontSurface);
+    SDL_FreeSurface(shieldDownSurface);
     SDL_FreeSurface(ghostSurface);
     SDL_FreeSurface(arrowUpSurface);
     SDL_FreeSurface(arrowDownSurface);
@@ -765,16 +865,18 @@ int main(int argc, char *argv[])
     SDL_FreeSurface(water_flowSurface);
 
     Uint32 lastTime = SDL_GetTicks();
+    
     int quit = 0;
 
     //intial Spawn
     set_pacman_spawn(&game.pacman.x, &game.pacman.y, curr_level_num);
     curr_pacman_texture = game.pacman_front_texture;
+    curr_shield_texture = game.pacman_front_shield_texture;
     set_ghost_spawn(&game.ghost.x, &game.ghost.y, curr_level_num);
 
     while (!quit)
     {
-        Uint32 currentTime = SDL_GetTicks();
+        currentTime = SDL_GetTicks();
         float deltaTime = (currentTime - lastTime) / 1000.0f;
         lastTime = currentTime;
         moveGhost(&game, deltaTime);
