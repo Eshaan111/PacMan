@@ -56,49 +56,49 @@ int level1[MAP_HEIGHT][MAP_WIDTH] = {
 
 int level2[MAP_HEIGHT][MAP_WIDTH] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
+    {1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1},
+    {1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
+    {0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
+    {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 ,1},
+    {1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1}
+};
+
+int level3[MAP_HEIGHT][MAP_WIDTH] = {
+    {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
     {1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1},
     {1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1},
-    {0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
+    {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
     {1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1},
     {1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0},
     {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-int level3[MAP_HEIGHT][MAP_WIDTH] = {
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-    {1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
-    {1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1},
-    {1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1},
-    {1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
-    {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 ,1},
-    {1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1}
-};
-
 int level4[MAP_HEIGHT][MAP_WIDTH] = {
     //  (1,0)
-    {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 1, 1, 0, 0, 0, 1, 0, 1},
-    {1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 1, 0, 1},
+    {1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1},
     {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1},
     {1, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 1, 0, 1, 0, 1},
     {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1},
-    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1}
 };
 
 int curr_level[13][20];
-int curr_level_num = 1;
+int curr_level_num = 4;
 int prev_level_num = 0;
 SDL_Texture *curr_pacman_texture;
 
@@ -125,14 +125,15 @@ void set_pacman_spawn(float *x, float *y, int curr_level)
         *x = TILE_SIZE * 0 + (TILE_SIZE - PACMAN_SIZE) / 2;
         *y = TILE_SIZE * 6 + (TILE_SIZE - PACMAN_SIZE) / 2;
         break;
+
     case 3:
-        *x = TILE_SIZE * 0 + (TILE_SIZE - PACMAN_SIZE) / 2;
-        *y = TILE_SIZE * 8 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        *x = TILE_SIZE * 1 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        *y = TILE_SIZE * 0 + (TILE_SIZE - PACMAN_SIZE) / 2;
         break;
 
     case 4:
-        *x = TILE_SIZE * 1 + (TILE_SIZE - PACMAN_SIZE) / 2;
-        *y = TILE_SIZE * 0 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        *x = TILE_SIZE * 0 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        *y = TILE_SIZE * 9 + (TILE_SIZE - PACMAN_SIZE) / 2;
         break;
     
     default:
@@ -149,12 +150,12 @@ void set_ghost_spawn(float *x, float *y, int curr_level)
         *y = 0;
         break;
     case 2:
-        *x = TILE_SIZE * 10 + (TILE_SIZE - PACMAN_SIZE) / 2;
-        *y = TILE_SIZE * 9 + (TILE_SIZE - PACMAN_SIZE) / 2;
-        break;
-    case 3:
         *x =0;
         *y = 0;
+        break;
+    case 3:
+        *x = TILE_SIZE * 10 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        *y = TILE_SIZE * 9 + (TILE_SIZE - PACMAN_SIZE) / 2;
         break;
     case 4:
         *x = TILE_SIZE * 8+ (TILE_SIZE - PACMAN_SIZE) / 2;
@@ -226,10 +227,10 @@ SDL_Texture *curr_primary_text(int curr_level, GameState *game)
         break;
 
     case 2:
-        return game->stone_texture;
+        return game->water_texture;
         break;
     case 3:
-        return game->water_texture;
+        return game->stone_texture;
         break;
     case 4:
         return game->lava_texture;
@@ -246,10 +247,10 @@ SDL_Texture *curr_second_text(int curr_level, GameState *game)
         break;
 
     case 2:
-        return game->stone_texture;
+        return game->water_flow_texture;
         break;
     case 3:
-        return game->water_flow_texture;
+        return game->stone_texture;
         break;
 
     case 4:
@@ -260,26 +261,37 @@ SDL_Texture *curr_second_text(int curr_level, GameState *game)
 
 void arrow_logic(GameState *game, int level)
 {
-    if (level == 1 || level == 2)
+    if (level == 1 || level == 3)
     {
         game->arrow_up.x = 0;
         game->arrow_down.x = 0;
     }
     else
     {
-        int arrow_speed = 20; // Speed of arrows in pixels per frame
-
+        int arrow_speed = 5;
+        // int y =game->pacman.y;
+        // int y1 = y/TILE_SIZE;
+        // int y2 = ((12*TILE_SIZE)-y)/TILE_SIZE;
+        // printf("--%d %d--",y1+1,y2);
+        // if(y1+1 > 3 && y2> 3){
+        //     arrow_speed = 5; // Speed of arrows in pixels per frame
+        // }
+        // else{
+        //     arrow_speed = 0;
+        // }
         // Ensure arrows spawn in valid locations
         if (game->arrow_up.x == -1)
-        { 
-            game->arrow_up.x = (rand() % (SCREEN_WIDTH - 8 * TILE_SIZE)) + (5 * TILE_SIZE);
+        {   
+            int x1 = (rand() % (SCREEN_WIDTH - 3 * TILE_SIZE)) + (3 * TILE_SIZE);
+            game->arrow_up.x = x1 + (TILE_SIZE/2);
             game->arrow_up.y = 11 * TILE_SIZE;
             
         }
 
         if (game->arrow_down.x == -1)
         { 
-            game->arrow_down.x = (rand() % (SCREEN_WIDTH - 8 * TILE_SIZE)) + (5 * TILE_SIZE);
+            int x2 = (rand() % (SCREEN_WIDTH - 3 * TILE_SIZE)) + (3 * TILE_SIZE);
+            game->arrow_down.x = (int)x2 + (TILE_SIZE/2);
             game->arrow_down.y = 0;
            
         }
@@ -317,36 +329,60 @@ int check_level_end(float x, float y, GameState *game)
         {
             curr_level_num = 2;
             set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num);
+            game->arrow_up.x = -1;
+            game->arrow_down.x = -1;
             return 1;
             // SDL_Quit();
         }
         break;
     case 2:
-        if (tileY1 == 8 && tileX1 == 19)
+        if (tileY1 == 11 && tileX1 == 18)
         {
             curr_level_num = 3;
             set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num);
-            
+            game->arrow_up.x = 0;
+            game->arrow_down.x = 0;
+            return 1;
+        // SDL_Quit();
+        
+        }break;
+    case 3:
+        if (tileY1 == 8 && tileX1 == 19)
+        {
+            curr_level_num = 4;
+            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num);
+            game->arrow_up.x = -1;
+            game->arrow_down.x = -1;
             return 1;
             // SDL_Quit();
         }
         break;
-    case 3:
-        if (tileY1 == 11 && tileX1 == 18)
-        {
-            curr_level_num = 4;
-            
-            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num);
-            
-            return 1;
-        // SDL_Quit();
-        }
-        break;
     case 4:
+         if (tileY1 == 1 && tileX1 == 1){
+            level4[1][2]=0;
+            level4[1][3]=0;
+            level4[1][4]=0;
+         }
+         
 
-        
-        
-        // SpawnArrow(&game->arrow_up.x, &game->arrow_up.y, curr_level_num);
+         if(tileY1 == 1 && tileX1 ==5 ){
+            level4[1][2]=1;
+            level4[1][3]=1;
+            level4[1][4]=1;
+
+         }
+         if(tileY1 == 1 && tileX1 ==9){
+            level4[1][10] =0;
+            level4[2][9] = 0;
+            level4[3][9] = 0;
+            level4[4][9] = 0;
+
+            level4[1][13] =1;
+            level4[3][8] =1;
+            level4[3][10] =1;
+
+         }
+         array_copy(curr_level,level4);
     default:
         break;
     }
@@ -451,7 +487,7 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
             }
         }
     }
-    else if (curr_level_num == 2)
+    else if (curr_level_num == 3)
     {
 
         float pacman_x = game->pacman.x;
@@ -476,7 +512,7 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
             }
         }
     }
-    else if (curr_level_num == 3)
+    else if (curr_level_num == 2)
     {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -497,19 +533,19 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
             }
         }
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-        SDL_Rect arrowUpRect = {game->arrow_up.x, game->arrow_up.y, PACMAN_SIZE, PACMAN_SIZE};
+        
+        if(game->arrow_up.x != 0 || game->arrow_down.x != 0){
+        SDL_Rect arrowUpRect = {game->arrow_up.x, game->arrow_up.y, 20, 54};
         SDL_RenderCopy(renderer, game->arrow_up_texture, NULL, &arrowUpRect);
         
-        SDL_Rect arrowDownRect = {game->arrow_down.x, game->arrow_down.y,PACMAN_SIZE, PACMAN_SIZE};
+        SDL_Rect arrowDownRect = {game->arrow_down.x, game->arrow_down.y,20, 54};
         SDL_RenderCopy(renderer, game->arrow_down_texture, NULL, &arrowDownRect);
-        
+        }
     }    
-    else if (curr_level_num == 4)
-        {
+    else if (curr_level_num == 4){
     
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            for (int y = 0; y < MAP_HEIGHT; y++)
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        for (int y = 0; y < MAP_HEIGHT; y++)
             {
                 for (int x = 0; x < MAP_WIDTH; x++)
                 {
@@ -525,20 +561,26 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
                     }
                 }
             }
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-        SDL_Rect arrowUpRect = {game->arrow_up.x, game->arrow_up.y, 54, 54};
-       SDL_RenderCopy(renderer, game->arrow_up_texture, NULL, &arrowUpRect);
-       
-        SDL_Rect arrowDownRect = {game->arrow_down.x, game->arrow_down.y, 54, 54};
-        SDL_RenderCopy(renderer, game->arrow_down_texture, NULL, &arrowDownRect);
         
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        
+        float arrow_down_x = game->arrow_down.x;
+        float arrow_up_x = game->arrow_up.x;
+
+        if(arrow_down_x > 2 || arrow_up_x > 2){
+            SDL_Rect arrowUpRect = {game->arrow_up.x, game->arrow_up.y, 20, 54};
+            SDL_RenderCopy(renderer, game->arrow_up_texture, NULL, &arrowUpRect);
+        
+            SDL_Rect arrowDownRect = {game->arrow_down.x, game->arrow_down.y, 20, 54};
+            SDL_RenderCopy(renderer, game->arrow_down_texture, NULL, &arrowDownRect);
+        }
     }
 
     SDL_Rect pacmanRect = {(int)game->pacman.x, (int)game->pacman.y, PACMAN_SIZE, PACMAN_SIZE};
     SDL_RenderCopy(renderer, curr_pacman_texture, NULL, &pacmanRect);
 
-    if(curr_level_num!=1 && curr_level_num!=3){    SDL_Rect ghostRect = {(int)game->ghost.x, (int)game->ghost.y, PACMAN_SIZE, PACMAN_SIZE};
+    if(curr_level_num!=1 && curr_level_num!=2){    
+    SDL_Rect ghostRect = {(int)game->ghost.x, (int)game->ghost.y, PACMAN_SIZE, PACMAN_SIZE};
     SDL_RenderCopy(renderer, game->ghost_texture, NULL, &ghostRect);
 }
     SDL_RenderPresent(renderer);
