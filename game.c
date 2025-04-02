@@ -110,6 +110,7 @@ SDL_Texture *curr_shield_texture;
 Uint32 lastSpacePressTime = 0;
 Uint32 currentTime = 0;
 Uint32 spacePressStartTime = 0;
+Uint32 cooldown_start=0;
 
 void array_copy(int curr_level[13][20], int level_array[13][20])
 {
@@ -455,18 +456,22 @@ int check_events(SDL_Window *window, GameState *game, float speed, float deltaTi
     // }
         
     if (keys[SDL_SCANCODE_SPACE]) {
-        if (spacePressStartTime == 0) {
-            spacePressStartTime = currentTime;  // First press detected
-        }
-        lastSpacePressTime = currentTime;  // Reset shield duration timer
+        if (currentTime - cooldown_start > 3000) {  // Apply 3-second cooldown
+            if (spacePressStartTime == 0) {
+                spacePressStartTime = currentTime;  // First press detected
+                cooldown_start = currentTime;  // Start cooldown
+            }
+            lastSpacePressTime = currentTime;  // Reset shield duration timer
 
-        // If space has been held continuously for 1 second, disable shield
-        if (currentTime - spacePressStartTime >= 1000) {
-            shield = 0;
-        } else {
-            shield = 1;
+            // If space has been held continuously for 1 second, disable shield
+            if (currentTime - spacePressStartTime >= 1000) {
+                shield = 0;
+            } else {
+                shield = 1;
+            }
         }
-    } else {
+    } 
+    else {
         spacePressStartTime = 0;  // Reset hold timer when space is released
     }
 
