@@ -104,6 +104,21 @@ int level4[MAP_HEIGHT][MAP_WIDTH] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1}
 };
+int level5[MAP_HEIGHT][MAP_WIDTH] = {
+    //  (1,0)
+    {2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+    {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
+    {2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+};
 
 int level5[MAP_HEIGHT][MAP_WIDTH] = {
     //  (1,0)
@@ -123,7 +138,7 @@ int level5[MAP_HEIGHT][MAP_WIDTH] = {
 
 
 int curr_level[13][20];
-int curr_level_num = 1;
+int curr_level_num = 5;
 int prev_level_num = 0;
 int shield = 0;
 SDL_Texture *curr_pacman_texture;
@@ -172,6 +187,10 @@ void set_pacman_spawn(float *x, float *y, int curr_level)
         break;
 
     
+    case 5:
+        *x = TILE_SIZE * 9 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        *y = TILE_SIZE * 8 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        break;
     default:
         break;
     }
@@ -196,11 +215,20 @@ void set_ghost_spawn(float *x, float *y, int curr_level,GameState *game)
     case 4:
         *x = TILE_SIZE * 8+ (TILE_SIZE - PACMAN_SIZE) / 2;
         *y = TILE_SIZE * 5 + (TILE_SIZE - PACMAN_SIZE) / 2;
+<<<<<<< HEAD
         break;
     case 5 :
         *x = game->pacman.x + (0.95*TILE_SIZE);
         *y = game->pacman.y;
         break;    
+=======
+        break; 
+
+     case 5:
+        *x = TILE_SIZE * 10+ (TILE_SIZE - PACMAN_SIZE) / 2;
+        *y = TILE_SIZE * 8+ (TILE_SIZE - PACMAN_SIZE) / 2;
+        break;       
+>>>>>>> 722dce316958a92ce6fdcf7144452bbf6fda1cde
     }
 }
 
@@ -288,10 +316,17 @@ SDL_Texture *curr_primary_text(int curr_level, GameState *game)
     case 4:
         return game->lava_texture;
         break;
+<<<<<<< HEAD
     case 5:
         return game ->lava_texture;
         break;
     
+=======
+    
+    case 5:
+        return game->lava_texture;
+        break;
+>>>>>>> 722dce316958a92ce6fdcf7144452bbf6fda1cde
     }
 }
 
@@ -314,7 +349,11 @@ SDL_Texture *curr_second_text(int curr_level, GameState *game)
         return game->lava_flow_texture;
         break;
     case 5:
+<<<<<<< HEAD
         return game ->stone_texture;
+=======
+        return game->stone_texture;
+>>>>>>> 722dce316958a92ce6fdcf7144452bbf6fda1cde
         break;
     }
 }
@@ -460,6 +499,7 @@ int check_level_end(float x, float y, GameState *game)
             set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num,game);
          }
          array_copy(curr_level,level4);
+<<<<<<< HEAD
         break;
     
     case 5:
@@ -484,11 +524,18 @@ int check_level_end(float x, float y, GameState *game)
         
         break;    
     
+=======
+        if (tileY1 == 11 && tileX1 == 19)
+        {
+            curr_level_num = 4;
+            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num);
+>>>>>>> 722dce316958a92ce6fdcf7144452bbf6fda1cde
     default:
         break;
     }
 
     return 0;
+}
 }
 
 int check_events(SDL_Window *window, GameState *game, float speed, float deltaTime)
@@ -693,8 +740,7 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
     else if (curr_level_num == 4){
     
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        for (int y = 0; y < MAP_HEIGHT; y++)
-            {
+        for (int y = 0; y < MAP_HEIGHT; y++){
                 for (int x = 0; x < MAP_WIDTH; x++)
                 {
                     if (curr_level[y][x] == 1)
@@ -707,8 +753,12 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
                         SDL_Rect wallRect = {x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE};
                         SDL_RenderCopy(renderer, curr_second_text(curr_level_num, game), NULL, &wallRect);
                     }
+                    else if(curr_level[y][x] == 3){
+                        SDL_Rect wallRect = {x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                        SDL_RenderCopy(renderer, curr_second_text(game->lava_flow_texture,game), NULL, &wallRect);
+                    }
                 }
-            }
+        }
         
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         
@@ -769,9 +819,9 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
     }
 
     if(curr_level_num!=1 && curr_level_num!=2){    
-    SDL_Rect ghostRect = {(int)game->ghost.x, (int)game->ghost.y, PACMAN_SIZE, PACMAN_SIZE};
-    SDL_RenderCopy(renderer, game->ghost_texture, NULL, &ghostRect);
-}
+        SDL_Rect ghostRect = {(int)game->ghost.x, (int)game->ghost.y, PACMAN_SIZE, PACMAN_SIZE};
+        SDL_RenderCopy(renderer, game->ghost_texture, NULL, &ghostRect);
+    }
     SDL_RenderPresent(renderer);
 }
 
