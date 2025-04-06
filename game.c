@@ -42,6 +42,10 @@ typedef struct
     SDL_Texture *lava_texture;
     SDL_Texture *lava_flow_texture;
     SDL_Texture *water_flow_texture;
+    SDL_Texture *game_over_texture;
+    SDL_Texture *play_again_texture;
+    SDL_Texture *quit_texture;
+
 } GameState;
 
 int level1[MAP_HEIGHT][MAP_WIDTH] = {
@@ -101,6 +105,23 @@ int level4[MAP_HEIGHT][MAP_WIDTH] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1}
 };
 
+int level5[MAP_HEIGHT][MAP_WIDTH] = {
+    //  (1,0)
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 2},
+    {2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 2},
+    {2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 2},
+    {2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2},
+    {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+};
+
+
 int curr_level[13][20];
 int curr_level_num = 1;
 int prev_level_num = 0;
@@ -145,13 +166,18 @@ void set_pacman_spawn(float *x, float *y, int curr_level)
         *x = TILE_SIZE * 0 + (TILE_SIZE - PACMAN_SIZE) / 2;
         *y = TILE_SIZE * 9 + (TILE_SIZE - PACMAN_SIZE) / 2;
         break;
+    case 5 :
+        *x = TILE_SIZE * 9 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        *y = TILE_SIZE * 6 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        break;
+
     
     default:
         break;
     }
 }
 
-void set_ghost_spawn(float *x, float *y, int curr_level)
+void set_ghost_spawn(float *x, float *y, int curr_level,GameState *game)
 {
     switch (curr_level)
     {
@@ -170,6 +196,10 @@ void set_ghost_spawn(float *x, float *y, int curr_level)
     case 4:
         *x = TILE_SIZE * 8+ (TILE_SIZE - PACMAN_SIZE) / 2;
         *y = TILE_SIZE * 5 + (TILE_SIZE - PACMAN_SIZE) / 2;
+        break;
+    case 5 :
+        *x = game->pacman.x + (0.95*TILE_SIZE);
+        *y = game->pacman.y;
         break;    
     }
 }
@@ -195,6 +225,16 @@ int checkCollision(float x, float y)
     {
         return 1;
     }
+    if (curr_level[tileY1][tileX1] == 2 || curr_level[tileY1][tileX2] == 2 ||
+        curr_level[tileY2][tileX1] == 2 || curr_level[tileY2][tileX2] == 2)
+    {
+        return 1;
+    }
+    if (curr_level[tileY1][tileX1] == 3 || curr_level[tileY1][tileX2] == 3 ||
+        curr_level[tileY2][tileX1] == 3 || curr_level[tileY2][tileX2] == 3)
+    {
+        return 1;
+    }
 
     return 0;
 }
@@ -202,6 +242,9 @@ int checkCollision(float x, float y)
 void moveGhost(GameState *game, float deltaTime)
 {
     float speed = 100.0f; // Increased speed
+    if(curr_level_num == 5 || curr_level_num == 1 || curr_level_num == 2){
+        speed = 0;
+    }
     float dx = game->pacman.x - game->ghost.x;
     float dy = game->pacman.y - game->ghost.y;
     float distance = sqrt(dx * dx + dy * dy);
@@ -245,6 +288,10 @@ SDL_Texture *curr_primary_text(int curr_level, GameState *game)
     case 4:
         return game->lava_texture;
         break;
+    case 5:
+        return game ->lava_texture;
+        break;
+    
     }
 }
 
@@ -266,12 +313,15 @@ SDL_Texture *curr_second_text(int curr_level, GameState *game)
     case 4:
         return game->lava_flow_texture;
         break;
+    case 5:
+        return game ->stone_texture;
+        break;
     }
 }
 
 void arrow_logic(GameState *game, int level)
 {
-    if (level == 1 || level == 3)
+    if (level == 1 || level == 3 || level == 5)
     {
         game->arrow_up.x = 0;
         game->arrow_down.x = 0;
@@ -336,9 +386,10 @@ int check_level_end(float x, float y, GameState *game)
     {
     case 1:
         if (tileY1 == 6 && tileX1 == 19)
-        {
+        {   
+            printf("Ending level 1");
             curr_level_num = 2;
-            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num);
+            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num,game);
             game->arrow_up.x = -1;
             game->arrow_down.x = -1;
             return 1;
@@ -348,8 +399,9 @@ int check_level_end(float x, float y, GameState *game)
     case 2:
         if (tileY1 == 11 && tileX1 == 18)
         {
+            printf("Ending level 2");
             curr_level_num = 3;
-            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num);
+            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num,game);
             game->arrow_up.x = 0;
             game->arrow_down.x = 0;
             return 1;
@@ -359,8 +411,9 @@ int check_level_end(float x, float y, GameState *game)
     case 3:
         if (tileY1 == 8 && tileX1 == 19)
         {
+            printf("Ending level 3");
             curr_level_num = 4;
-            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num);
+            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num,game);
             game->arrow_up.x = -1;
             game->arrow_down.x = -1;
             return 1;
@@ -374,7 +427,6 @@ int check_level_end(float x, float y, GameState *game)
             level4[1][4]=0;
          }
          
-
          if(tileY1 == 1 && tileX1 ==5 ){
             level4[1][2]=1;
             level4[1][3]=1;
@@ -402,7 +454,36 @@ int check_level_end(float x, float y, GameState *game)
             level4[3][8] =2;
             level4[3][10] =2;
          }
+         if(tileY1 == 11 && tileX1 == 18){
+            printf("Ending level ");
+            curr_level_num = 5;
+            set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num,game);
+         }
          array_copy(curr_level,level4);
+        break;
+    
+    case 5:
+        set_ghost_spawn(&game->ghost.x, &game->ghost.y, curr_level_num,game);
+        if(tileY1 == 8 && tileX1 ==1){
+            curr_level_num = 1;
+        }
+        else if(tileY1 == 8 && tileX1 ==2){
+            curr_level_num = 1;
+        }
+        else if(tileY1 == 8 && tileX1 ==3){
+            curr_level_num = 1;
+        }
+        else if(tileY1 == 8 && tileX1 ==17){
+            curr_level_num = 1;
+            SDL_Quit();
+        }
+        else if(tileY1 == 8 && tileX1 ==16){
+            
+            SDL_Quit();
+        }
+        
+        break;    
+    
     default:
         break;
     }
@@ -498,29 +579,32 @@ int check_events(SDL_Window *window, GameState *game, float speed, float deltaTi
     }
     
     //GHOST PACMAN COLLISION 
-    if (fabs(game->pacman.x - game->ghost.x) < PACMAN_SIZE && fabs(game->pacman.y - game->ghost.y) < PACMAN_SIZE)
-    {
-        printf("Game Over! The ghost caught Pac-Man.\n");
-        SDL_Quit();
-        exit(0);
-    }
+        if(curr_level_num!=5){
+            if (fabs(game->pacman.x - game->ghost.x) < PACMAN_SIZE && fabs(game->pacman.y - game->ghost.y) < PACMAN_SIZE)
+            {
+            printf("Game Over! The ghost caught Pac-Man.\n");
+            curr_level_num = 5;
+            // SDL_Quit();
+            //exit(0);
+            }
+        }
     
     // PACMAN ARROWS COLLISION
     if (shield == 0) {
     if (fabs(game->pacman.x - game->arrow_up.x) < PACMAN_SIZE && fabs(game->pacman.y - game->arrow_up.y) < PACMAN_SIZE) {
         printf("Game Over! The arrow caught Pac-Man.\n");
-        SDL_Quit();
-        exit(0);
+        curr_level_num = 5;
+        //SDL_Quit();
+        //exit(0);
     }
 
     if (fabs(game->pacman.x - game->arrow_down.x) < PACMAN_SIZE && fabs(game->pacman.y - game->arrow_down.y) < PACMAN_SIZE) {
         printf("Game Over! The arrow caught Pac-Man.\n");
-        SDL_Quit();
-        exit(0);
+        curr_level_num = 5;
+        //SDL_Quit();
+        //exit(0);
     }
-} else {
-    printf("Parried!\n");
-}
+}  
     
     check_level_end(game->pacman.x, game->pacman.y, game);
     return quit;
@@ -638,6 +722,41 @@ void renderGame(SDL_Renderer *renderer, GameState *game)
             SDL_Rect arrowDownRect = {game->arrow_down.x, game->arrow_down.y, 20, 54};
             SDL_RenderCopy(renderer, game->arrow_down_texture, NULL, &arrowDownRect);
         }
+    }
+    else if (curr_level_num == 5)
+    {
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        for (int y = 0; y < MAP_HEIGHT; y++)
+        {
+            for (int x = 0; x < MAP_WIDTH; x++)
+            {
+                if (curr_level[y][x] == 1)
+                {
+                    SDL_Rect wallRect = {x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                    SDL_RenderFillRect(renderer, &wallRect);
+                }
+                else if (curr_level[y][x] == 2)
+                {
+                    SDL_Rect wallRect = {x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                    SDL_RenderCopy(renderer, curr_second_text(curr_level_num, game), NULL, &wallRect);
+                }
+                 
+            }
+        }
+
+        SDL_Rect game_overRect = {296,114,480,180};
+        SDL_RenderCopy(renderer,game->game_over_texture,NULL,&game_overRect);
+
+        SDL_Rect play_againRect = {1*TILE_SIZE+10,8*TILE_SIZE,0.5*336.2,0.5*108};
+        SDL_RenderCopy(renderer,game->play_again_texture,NULL,&play_againRect);
+        
+        SDL_Rect quitRect = {17*TILE_SIZE+10,8*TILE_SIZE,0.5*169.2,0.5*108};
+        SDL_RenderCopy(renderer,game->quit_texture,NULL,&quitRect);
+        
+
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     }
 
     if(shield == 0){
@@ -835,6 +954,36 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    SDL_Surface *Game_overSurface = IMG_Load("images/Game_over.jpg");
+    if (!Game_overSurface)
+    {
+        printf("Could not load water image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    
+    SDL_Surface *Play_againSurface = IMG_Load("images/play_again.png");
+    if (!Play_againSurface)
+    {
+        printf("Could not load play-again image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    
+    SDL_Surface *QuitSurface = IMG_Load("images/quit.png");
+    if (!QuitSurface)
+    {
+        printf("Could not load quit image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    
     GameState game;
     game.arrow_up.y = -1; // Start off-screen
     game.arrow_up.x = -1;
@@ -861,6 +1010,12 @@ int main(int argc, char *argv[])
     game.lava_texture = SDL_CreateTextureFromSurface(renderer, lavaSurface);
     game.lava_flow_texture = SDL_CreateTextureFromSurface(renderer, lava_flowSurface);
     game.water_flow_texture = SDL_CreateTextureFromSurface(renderer, water_flowSurface);
+    game.game_over_texture = SDL_CreateTextureFromSurface(renderer,Game_overSurface);
+    game.play_again_texture = SDL_CreateTextureFromSurface(renderer,Play_againSurface);
+    game.quit_texture = SDL_CreateTextureFromSurface(renderer,QuitSurface);
+
+
+
     SDL_FreeSurface(pacmanUpSurface);
     SDL_FreeSurface(pacmanDownSurface);
     SDL_FreeSurface(pacmanFrontSurface);
@@ -878,6 +1033,12 @@ int main(int argc, char *argv[])
     SDL_FreeSurface(lavaSurface);
     SDL_FreeSurface(lava_flowSurface);
     SDL_FreeSurface(water_flowSurface);
+    SDL_FreeSurface(Game_overSurface);
+    SDL_FreeSurface(Play_againSurface);
+    SDL_FreeSurface(QuitSurface);
+
+
+
 
     Uint32 lastTime = SDL_GetTicks();
     
@@ -887,7 +1048,7 @@ int main(int argc, char *argv[])
     set_pacman_spawn(&game.pacman.x, &game.pacman.y, curr_level_num);
     curr_pacman_texture = game.pacman_front_texture;
     curr_shield_texture = game.pacman_front_shield_texture;
-    set_ghost_spawn(&game.ghost.x, &game.ghost.y, curr_level_num);
+    set_ghost_spawn(&game.ghost.x, &game.ghost.y, curr_level_num,&game);
 
     while (!quit)
     {
@@ -915,10 +1076,14 @@ int main(int argc, char *argv[])
             {
                 array_copy(curr_level, level4);
             }
+            else if (curr_level_num == 5)
+            {
+                array_copy(curr_level, level5);
+            }
 
             // Respawn Pac-Man when switching levels
             set_pacman_spawn(&game.pacman.x, &game.pacman.y, curr_level_num);
-            // set_ghost_spawn(&game.ghost.x, &game.ghost.y, curr_level_num);
+            //set_ghost_spawn(&game.ghost.x, &game.ghost.y, curr_level_num,game);
             game.pacman.vx = 0;
             game.pacman.vy = 0;
 
@@ -940,6 +1105,9 @@ int main(int argc, char *argv[])
     SDL_DestroyTexture(game.lava_texture);
     SDL_DestroyTexture(game.lava_flow_texture);
     SDL_DestroyTexture(game.water_flow_texture);
+    SDL_DestroyTexture(game.game_over_texture);
+    SDL_DestroyTexture(game.play_again_texture);
+    SDL_DestroyTexture(game.quit_texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
